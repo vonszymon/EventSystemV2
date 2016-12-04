@@ -55,10 +55,26 @@ kubectl expose deployment eventservices --type="LoadBalancer"
 kubectl run eventsystem --image=gcr.io/event-system-148108/eventsystem:v2 --port=8080
 kubectl expose deployment eventsystem --type="LoadBalancer"
 
+*************** AUTOSKALOWANIE DEPLOYMENTU ************************
+
+Stworzenie autoskalera dla deploymentu eventservices o minimalnej liczbie podów 2, maks 5 i defaultowym % CPU przy którym tworzony nowy pod.
+
+kubectl autoscale deployment eventservices --min=2 --max=5
+
+*************** TESTY JMETER **************************
+
+W folderze Jmeter znajdują się testy jmeterowe, które można wczytać do guia i odpalić wybrane testy. Należy się upewnić że zmienna przechowująca IP systemu ma poprawną wartość.
+Zalecam po odpaleniu testów które dodają eventy/komentarze bądź userów zrestartować odpowiedni pod z bazą, żeby wstała pusta baza bez danych wrzuconych przez test.
+
+kubectl delete pod eventdb_xxx ( po usunięciu poda, deployment automatycznie postawi nowy pod, bo dba żeby zawsze była postawiona określona liczba podów )
+kubectl delete pod userdb_xxx
+
+Odpalając np. test dodawania komentarzy można zaobserwować działanie autoskalingu. Przy większym zużyciu CPU autoskaler automatycznie stworzy nowe pody,
+a po zakończeniu testów, po jakimś czasie dodatkowe pody zostaną usunięte z powodu braku ruchu.
+
 ************ PRZYDATNE KOMENDY ******************
 
-kubectl get deployments
-kubectl get pods
+kubectl get deployments/pods/hpa (hpa - autoskalery)
 kubectl get services ( można tu sprawdzić external ip serwisów dzięki którym można się na nie wbić )
-kubectl delete ( deployment/service ) xxx
+kubectl delete ( deployment/service/hpa ) xxx
 kubectl logs pod_name
