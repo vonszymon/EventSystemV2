@@ -53,13 +53,17 @@ kubectl run eventservices --image=gcr.io/event-system-148108/eventservices:v1 --
 kubectl expose deployment eventservices --type="LoadBalancer"
 
 kubectl run eventsystem --image=gcr.io/event-system-148108/eventsystem:v2 --port=8080
-kubectl expose deployment eventsystem --type="LoadBalancer"
+kubectl expose deployment eventsystem --type="LoadBalancer" --session-affinity="ClientIP"
 
 *************** AUTOSKALOWANIE DEPLOYMENTU ************************
 
-Stworzenie autoskalera dla deploymentu eventservices o minimalnej liczbie podów 2, maks 5 i defaultowym % CPU przy którym tworzony nowy pod.
+Stworzenie autoskalera dla deploymentu eventservices o minimalnej liczbie podów 3, maks 8 i % CPU przy którym tworzony nowy pod.
 
-kubectl autoscale deployment eventservices --min=2 --max=5
+kubectl autoscale deployment eventservices --min=3 --max=8 --cpu-percent=20
+
+Stworzenie autoskalera dla deploymentu eventsystem.
+
+kubectl autoscale deployment eventsystem --min=3 --max=5 --cpu-percent=20
 
 *************** TESTY JMETER **************************
 
