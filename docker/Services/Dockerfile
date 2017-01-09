@@ -40,7 +40,7 @@ WORKDIR /app/pivotal-tc-server-developer-3.1.3.SR1
 RUN \
   ./tcruntime-instance.sh create my_server
 
-ADD eventservices.war /app/pivotal-tc-server-developer-3.1.3.SR1/my_server/webapps
+ADD EventSystemServices.war /app/pivotal-tc-server-developer-3.1.3.SR1/my_server/webapps
 
 EXPOSE 8080
 

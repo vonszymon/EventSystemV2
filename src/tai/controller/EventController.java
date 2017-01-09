@@ -1,7 +1,6 @@
 package tai.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -34,9 +35,7 @@ import tai.domain.Commentary;
 import tai.domain.CommentaryComparator;
 import tai.domain.Event;
 import tai.domain.EventComparator;
-import tai.domain.FeedContent;
 import tai.domain.User;
-import tai.feed.RssViewer;
 import tai.service.CommentaryServiceClient;
 import tai.service.EventServiceClient;
 
@@ -66,8 +65,11 @@ public class EventController {
 	}  
 	
 	@RequestMapping("registerUser")  
-	public String registerUser(@ModelAttribute User user) {  
-		return "userRegister";
+	public String registerUser(@ModelAttribute User user) { 
+		if (isUserLogged()) {
+			return "redirect:/getList";
+		}
+		return "userRegister";	
 	}
 	
 	@RequestMapping("deleteUser")  
@@ -237,6 +239,13 @@ public class EventController {
 			@RequestParam(value = "logout", required = false) String logout) {
 
 		ModelAndView model = new ModelAndView();
+		if (isUserLogged()) {
+			model.setViewName("redirect:/getList");
+			return model;
+		} else {
+			model.setViewName("login");
+		}
+		
 		if (error != null) {
 			model.addObject("error", "Invalid username and password!");
 		}
@@ -244,30 +253,14 @@ public class EventController {
 		if (logout != null) {
 			model.addObject("msg", "You've been logged out successfully.");
 		}
-		model.setViewName("login");
 
 		return model;
 
 	}
 	
-	@RequestMapping("rssfeed")
-	public ModelAndView getFeedInRss() {
-		Date currentDate = new Date();
-		List<FeedContent> items = new ArrayList<FeedContent>();
-		List<Event> eventList = eventService.getEvents();
-		for(Event e : eventList){
-			if(currentDate.before(e.getStartDate())){
-				FeedContent content  = new FeedContent();
-				content.setTitle(e.getTitle());
-				content.setUrl("http://localhost:8080/TAI-Project/eventDetails/"+e.getEventID());
-				content.setSummary(e.getContent());
-				content.setCreatedDate(e.getStartDate());
-				items.add(content);
-			}
-		}
-		
-		return new ModelAndView(new RssViewer(), "feedContent", items);
-
+	private boolean isUserLogged() {
+		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return !(authentication instanceof AnonymousAuthenticationToken);
 	}
 	
 	enum UserAction {

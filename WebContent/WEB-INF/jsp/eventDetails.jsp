@@ -168,33 +168,6 @@ a:hover {
 	<sec:authorize access="hasRole('ROLE_ADMIN')">
 		<a href="${contextPath}/eventDetails/editEvent/${eventDetails.event.eventID}">Edit event</a>
 	</sec:authorize>
-	<div id="feeds">
-		<table id="feed_table">
-			<c:choose>
-			<c:when test="${not empty eventDetails.event.tweets}">
-				<c:forEach var="tweet" items="${eventDetails.event.tweets}">	
-			<tr>
-				<td><img src="http://oi61.tinypic.com/24n2psj.jpg" id="logo_img"></td>
-				<td id="feed_text_cell">
-					<font id="feed_time"><fmt:formatDate value="${tweet.date}" type="date" pattern="yyyy-MM-dd HH:mm:ss"/></font>
-					<br/>
-					${tweet.content}
-				</td>
-			</tr>
-
-				</c:forEach>
-			</c:when>
-			<c:otherwise>
-			<div id="comment_content">No tweets.</div>
-			</c:otherwise>
-		</c:choose>
-		
-		
-		
-
-		</table>
-	</div>
-
 
 	<div id="main_comments">
 		<c:choose>
@@ -247,10 +220,6 @@ a:hover {
 				<tr>
 					<td>Date :</td>
 					<td><form:input type="date" path="startDate"/></td>
-				</tr>
-				<tr>
-					<td>Hashtag :</td>
-					<td><form:input path="hashtag"/></td>
 				</tr>
 				<tr>
 				<td> </td>  

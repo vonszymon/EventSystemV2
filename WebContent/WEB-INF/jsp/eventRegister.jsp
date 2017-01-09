@@ -50,10 +50,6 @@ td {
 						<td><form:input type="date" path="startDate" /></td>
 					</tr>
 					<tr>
-						<td>Hashtag :</td>
-						<td><form:input path="hashtag" /></td>
-					</tr>
-					<tr>
 					<td> </td>  
       				<td><input type="submit" value="Save" /></td>  
      				</tr>  

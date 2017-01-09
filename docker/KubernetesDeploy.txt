@@ -16,24 +16,34 @@ skopiować spakowany serwer ( https://drive.google.com/open?id=0B5c935hNCEjLSmU4
 Dodatkowo trzeba też wrzucić spakowaną aplikacje i serwisy REST-owe do odpowiadających im folderów: EventSystem.war i eventservices.war.
 W repozytorium znajdują się już spakowane wersje, więc ten krok można pominąć o ile nie wykonywane były zmiany w aplikacji.
 
+----------------------------------------------------------------------------------------------------------------------------
+
+WSZYSTKIE KOMENDY PONIŻEJ NALEŻY ODPALAĆ Z TERMINALA ZALOGOWANEGO NA ROOTA (sudo -i)
+Google Cloud SDK musi być zainstalowany (https://cloud.google.com/sdk/docs/quickstart-linux)
+i skonfigurowany (gcloud init) także z terminala roota.
+
+Uruchamianie dockera:
+service docker start
+
 ------------ budowanie userdb i pushowanie obrazu do rejestru googla (można nadawać wersje budowanym obrazom) ----------
-docker build -t gcr.io/event-system-148108/userdb:v3 .
-gcloud docker push gcr.io/event-system-148108/userdb:v3
+export PROJECT_ID="iosr-cloud"
+docker build -t gcr.io/$PROJECT_ID/userdb:v1 .
+gcloud docker push gcr.io/$PROJECT_ID/userdb:v1
 
 ------------ budowanie eventdb i pushowanie obrazu do rejestru googla ----------
 
-docker build -t gcr.io/event-system-148108/eventdb:v2 .
-gcloud docker push gcr.io/event-system-148108/eventdb:v2
+docker build -t gcr.io/$PROJECT_ID/eventdb:v1 .
+gcloud docker push gcr.io/$PROJECT_ID/eventdb:v1
 
 ------------ budowanie eventsystem i pushowanie obrazu do rejestru googla ----------
 
-docker build -t gcr.io/event-system-148108/eventsystem:v2 .
-gcloud docker push gcr.io/event-system-148108/eventsystem:v2
+docker build -t gcr.io/$PROJECT_ID/eventsystem:v1 .
+gcloud docker push gcr.io/$PROJECT_ID/eventsystem:v1
 
 ------------ budowanie eventservices i pushowanie obrazu do rejestru googla ----------
 
-docker build -t gcr.io/event-system-148108/eventservices:v1 .
-gcloud docker push gcr.io/event-system-148108/eventservices:v1
+docker build -t gcr.io/$PROJECT_ID/eventservices:v1 .
+gcloud docker push gcr.io/$PROJECT_ID/eventservices:v1
 
 ************* URUCHAMIANIE APLIKACJI ******************
 
@@ -43,16 +53,19 @@ Deployment zarządza swoimi podami (jak pod padnie to go zrestartuje na przykła
 Możliwe jest stworzenie kilku replik ( podów ) którymi zarządza obiekt deployment ( wystarczy podanie liczby replik przy wywołaniu komendy, z defaultu jest jedna ).
 Druga komenda tworzy serwis dla danego deploymentu i nadaje externalIP przez który można się wbijać na niego.
 
-kubectl run userdb --image=gcr.io/event-system-148108/userdb:v3 --port=3306
+(odpalane z dowolnego katalogu, wcześniej trzeba utworzyć jeden cluster container)
+(gcloud containers clusters create iosr-cluster)
+
+kubectl run userdb --image=gcr.io/$PROJECT_ID/userdb:v1 --port=3306
 kubectl expose deployment userdb --type="LoadBalancer"
 
-kubectl run eventdb --image=gcr.io/event-system-148108/eventdb:v2 --port=3306
+kubectl run eventdb --image=gcr.io/$PROJECT_ID/eventdb:v1 --port=3306
 kubectl expose deployment eventdb --type="LoadBalancer"
 
-kubectl run eventservices --image=gcr.io/event-system-148108/eventservices:v1 --port=8080
+kubectl run eventservices --image=gcr.io/$PROJECT_ID/eventservices:v1 --port=8080
 kubectl expose deployment eventservices --type="LoadBalancer"
 
-kubectl run eventsystem --image=gcr.io/event-system-148108/eventsystem:v2 --port=8080
+kubectl run eventsystem --image=gcr.io/$PROJECT_ID/eventsystem:v1 --port=8080
 kubectl expose deployment eventsystem --type="LoadBalancer" --session-affinity="ClientIP"
 
 *************** AUTOSKALOWANIE DEPLOYMENTU ************************

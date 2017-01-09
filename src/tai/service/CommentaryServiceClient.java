@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
 import tai.domain.Commentary;
-import tai.domain.Event;
 
 public class CommentaryServiceClient {
 	

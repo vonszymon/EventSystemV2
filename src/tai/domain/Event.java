@@ -1,7 +1,6 @@
 package tai.domain;
 
 import java.util.Date;
-import java.util.List;
 
 public class Event {
 
@@ -9,9 +8,7 @@ public class Event {
 	private String title;
 	private Date startDate;
 	private String content;
-	private String hashtag;
 	private int numOfComments;
-	private List<Tweet> tweets;
 	private boolean active;
 	
 	
@@ -20,18 +17,6 @@ public class Event {
 	}
 	public void setActive(boolean active) {
 		this.active = active;
-	}
-	public String getHashtag() {
-		return hashtag;
-	}
-	public void setHashtag(String hashtag) {
-		this.hashtag = hashtag;
-	}
-	public List<Tweet> getTweets() {
-		return tweets;
-	}
-	public void setTweets(List<Tweet> tweets) {
-		this.tweets = tweets;
 	}
 	public int getEventID() {
 		return eventID;

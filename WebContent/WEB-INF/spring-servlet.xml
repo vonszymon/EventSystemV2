@@ -38,13 +38,11 @@
 		<property name="maxTotal" value="30" />
 		<property name="maxIdle" value="10" />
 		<property name="url"
-			value="jdbc:mysql://192.168.99.100:3301/events_users"/>
+			value="jdbc:mysql://userdb:3306/events_users"/>
 		<property name="username" value="sius"/>
 		<property name="password" value="sius_es"/>
 
 	</bean>
-
-	<bean id="rssViewer" class="tai.feed.RssViewer" />
 
 	<bean id="webexpressionHandler"
 		class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
